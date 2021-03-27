@@ -1,0 +1,56 @@
+import ReactDOM from "react-dom";
+import React from 'react'
+const MyContext = React.createContext();
+
+class Formik extends React.Component{
+  state= {surname: 'dmitri'}
+  handleChange = (event) => {
+    event.persist()//
+    this.setState((prev) => {
+      return {
+        [event.target.name] : event.target.value,
+      }
+    })
+  }
+  render(){
+    return (
+      <MyContext.Provider value={this.handleChange}>
+      {/*Все кто внутри получат доступ
+      через Сonsumer к методам и state Formik */}
+        {this.props.children(this.state)}
+      </MyContext.Provider>
+      )
+  }
+}
+
+class Example extends React.Component {
+  render() {
+    return <Formik>
+      {(state) => {
+        return <>
+        <form>
+          <input type='text'placeholder='exampleField'/>
+          <Field/>
+        </form>
+        {JSON.stringify(state, null, 2)}
+        </>
+      } }
+    </Formik>
+  }
+}
+
+const Field = () => {
+  return (
+    <MyContext.Consumer>
+      {(handleChange) => { 
+        return <>
+          <input name='surname' onChange={handleChange}/>
+        </>}}
+      </MyContext.Consumer>
+  )
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<Example />, rootElement);
+
+
