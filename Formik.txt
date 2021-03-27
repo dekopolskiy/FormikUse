@@ -5,8 +5,12 @@ const MyContext = React.createContext();
 class Formik extends React.Component{
   state= {surname: 'dmitri'}
   handleChange = (event) => {
-    event.persist()//
-    this.setState((prev) => {
+    event.persist()
+    /*event это экземпляр Syntethic Event, оболочка над стандартным event (для кроссбаузерности, отключает по умолчанию stopProganation)
+    Если используем обработчик событий, мыши ,клавы, и т.д. объект событие создается добавляется в пул(создается один раз и по требованию используется, по  
+    окончанию кода обнуляется)Соответсвенно setState асинхронищина, основной поток кода проходит, event обнуляется, setState выполняется, берет последнее     значение 
+    event и оно null, поэтому либо создавать копию event, либо event.persist(), чтобы не срабатавал механизм на данный event по обнулению*/
+    this.setState((prev) => {//setState использует под капотом Object.assign({}, state, {...prevState, newState})
       return {
         [event.target.name] : event.target.value,
       }
